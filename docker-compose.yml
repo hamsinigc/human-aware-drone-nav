@@ -1,0 +1,14 @@
+version: "3.8"
+services:
+  crowd_drone_sim:
+    build: .
+    container_name: crowd_drone_sim
+    environment:
+      - DISPLAY=${DISPLAY}
+      - LIBGL_ALWAYS_SOFTWARE=1
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw   # X11 socket for GUI passthrough
+      - ./drone_ws:/workspace/drone_ws      # live-edit scripts without rebuilding
+    network_mode: host
+    stdin_open: true
+    tty: true

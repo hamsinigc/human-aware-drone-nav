@@ -1,0 +1,36 @@
+# ---- Python ----
+__pycache__/
+*.pyc
+venv/
+*.egg-info/
+
+# ---- Virtual environments (Windows-side) ----
+traj_predictor/venv/
+drone_rl/venv/
+
+# ---- Trained model checkpoints (large, regenerable — use Git LFS instead, see README) ----
+*.pt
+*.zip
+!requirements*.zip
+
+# ---- Datasets (large — teammates download separately, see README) ----
+traj_predictor/data/
+
+# ---- Gazebo / ROS2 build artifacts ----
+drone_ws/build/
+drone_ws/install/
+drone_ws/log/
+**/__pycache__/
+
+# ---- Generated Gazebo world file (regenerate via generate_world.py, don't commit) ----
+drone_ws/src/crowd_drone_sim/worlds/crowd_world.world
+
+# ---- Logs / eval outputs ----
+eval_logs*/
+best_model*/
+
+# ---- OS / editor junk ----
+.DS_Store
+Thumbs.db
+.vscode/
+*.log

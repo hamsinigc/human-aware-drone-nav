@@ -1,0 +1,298 @@
+<?xml version="1.0"?>
+<sdf version="1.6">
+  <world name="crowd_world">
+    <include>
+      <uri>model://ground_plane</uri>
+    </include>
+    <include>
+      <uri>model://sun</uri>
+    </include>
+
+    <!-- The drone: a simple box we can move with velocity commands -->
+    <model name="drone">
+      <pose>0 0 1 0 0 0</pose>
+      <link name="link">
+        <inertial>
+          <mass>1.0</mass>
+        </inertial>
+        <collision name="collision">
+          <geometry>
+            <box><size>0.4 0.4 0.15</size></box>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <box><size>0.4 0.4 0.15</size></box>
+          </geometry>
+          <material>
+            <ambient>0.1 0.3 0.9 1</ambient>
+          </material>
+        </visual>
+      </link>
+      <plugin name="planar_move" filename="libgazebo_ros_planar_move.so">
+        <ros>
+          <namespace>/drone</namespace>
+        </ros>
+        <command_topic>cmd_vel</command_topic>
+        <odometry_topic>odom</odometry_topic>
+        <odometry_frame>odom</odometry_frame>
+        <robot_base_frame>link</robot_base_frame>
+      </plugin>
+    </model>
+
+    <!-- A walking pedestrian actor with a simple back-and-forth path -->
+    <actor name="pedestrian_1">
+      <pose>3 0 1.0 0 0 0</pose>
+      <skin>
+        <filename>walk.dae</filename>
+        <scale>1.0</scale>
+      </skin>
+      <animation name="walking">
+        <filename>walk.dae</filename>
+        <scale>1.0</scale>
+        <interpolate_x>true</interpolate_x>
+      </animation>
+      <script>
+        <loop>true</loop>
+        <auto_start>true</auto_start>
+        <trajectory id="0" type="walking">
+          <waypoint>
+            <time>0</time>
+            <pose>3 -3 1.0 0 0 1.57</pose>
+          </waypoint>
+          <waypoint>
+            <time>5</time>
+            <pose>3 3 1.0 0 0 1.57</pose>
+          </waypoint>
+          <waypoint>
+            <time>10</time>
+            <pose>3 -3 1.0 0 0 -1.57</pose>
+          </waypoint>
+        </trajectory>
+      </script>
+    </actor>
+  </world>
+</sdf><?xml version="1.0"?>
+<sdf version="1.6">
+  <world name="crowd_world">
+    <include>
+      <uri>model://ground_plane</uri>
+    </include>
+    <include>
+      <uri>model://sun</uri>
+    </include>
+
+    <!-- The drone: a simple box we can move with velocity commands -->
+    <model name="drone">
+      <pose>0 0 1 0 0 0</pose>
+      <link name="link">
+        <inertial>
+          <mass>1.0</mass>
+        </inertial>
+        <collision name="collision">
+          <geometry>
+            <box><size>0.4 0.4 0.15</size></box>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <box><size>0.4 0.4 0.15</size></box>
+          </geometry>
+          <material>
+            <ambient>0.1 0.3 0.9 1</ambient>
+          </material>
+        </visual>
+      </link>
+      <plugin name="planar_move" filename="libgazebo_ros_planar_move.so">
+        <ros>
+          <namespace>/drone</namespace>
+        </ros>
+        <command_topic>cmd_vel</command_topic>
+        <odometry_topic>odom</odometry_topic>
+        <odometry_frame>odom</odometry_frame>
+        <robot_base_frame>link</robot_base_frame>
+      </plugin>
+    </model>
+
+    <!-- A walking pedestrian actor with a simple back-and-forth path -->
+    <actor name="pedestrian_1">
+      <pose>3 0 1.0 0 0 0</pose>
+      <skin>
+        <filename>walk.dae</filename>
+        <scale>1.0</scale>
+      </skin>
+      <animation name="walking">
+        <filename>walk.dae</filename>
+        <scale>1.0</scale>
+        <interpolate_x>true</interpolate_x>
+      </animation>
+      <script>
+        <loop>true</loop>
+        <auto_start>true</auto_start>
+        <trajectory id="0" type="walking">
+          <waypoint>
+            <time>0</time>
+            <pose>3 -3 1.0 0 0 1.57</pose>
+          </waypoint>
+          <waypoint>
+            <time>5</time>
+            <pose>3 3 1.0 0 0 1.57</pose>
+          </waypoint>
+          <waypoint>
+            <time>10</time>
+            <pose>3 -3 1.0 0 0 -1.57</pose>
+          </waypoint>
+        </trajectory>
+      </script>
+    </actor>
+  </world>
+</sdf>
+<?xml version="1.0"?>
+<sdf version="1.6">
+  <world name="crowd_world">
+    <include>
+      <uri>model://ground_plane</uri>
+    </include>
+    <include>
+      <uri>model://sun</uri>
+    </include>
+
+    <!-- The drone: a simple box we can move with velocity commands -->
+    <model name="drone">
+      <pose>0 0 1 0 0 0</pose>
+      <link name="link">
+        <inertial>
+          <mass>1.0</mass>
+        </inertial>
+        <collision name="collision">
+          <geometry>
+            <box><size>0.4 0.4 0.15</size></box>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <box><size>0.4 0.4 0.15</size></box>
+          </geometry>
+          <material>
+            <ambient>0.1 0.3 0.9 1</ambient>
+          </material>
+        </visual>
+      </link>
+      <plugin name="planar_move" filename="libgazebo_ros_planar_move.so">
+        <ros>
+          <namespace>/drone</namespace>
+        </ros>
+        <command_topic>cmd_vel</command_topic>
+        <odometry_topic>odom</odometry_topic>
+        <odometry_frame>odom</odometry_frame>
+        <robot_base_frame>link</robot_base_frame>
+      </plugin>
+    </model>
+
+    <!-- A walking pedestrian actor with a simple back-and-forth path -->
+    <actor name="pedestrian_1">
+      <pose>3 0 1.0 0 0 0</pose>
+      <skin>
+        <filename>walk.dae</filename>
+        <scale>1.0</scale>
+      </skin>
+      <animation name="walking">
+        <filename>walk.dae</filename>
+        <scale>1.0</scale>
+        <interpolate_x>true</interpolate_x>
+      </animation>
+      <script>
+        <loop>true</loop>
+        <auto_start>true</auto_start>
+        <trajectory id="0" type="walking">
+          <waypoint>
+            <time>0</time>
+            <pose>3 -3 1.0 0 0 1.57</pose>
+          </waypoint>
+          <waypoint>
+            <time>5</time>
+            <pose>3 3 1.0 0 0 1.57</pose>
+          </waypoint>
+          <waypoint>
+            <time>10</time>
+            <pose>3 -3 1.0 0 0 -1.57</pose>
+          </waypoint>
+        </trajectory>
+      </script>
+    </actor>
+  </world>
+</sdf><?xml version="1.0"?>
+<sdf version="1.6">
+  <world name="crowd_world">
+    <include>
+      <uri>model://ground_plane</uri>
+    </include>
+    <include>
+      <uri>model://sun</uri>
+    </include>
+
+    <!-- The drone: a simple box we can move with velocity commands -->
+    <model name="drone">
+      <pose>0 0 1 0 0 0</pose>
+      <link name="link">
+        <inertial>
+          <mass>1.0</mass>
+        </inertial>
+        <collision name="collision">
+          <geometry>
+            <box><size>0.4 0.4 0.15</size></box>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <box><size>0.4 0.4 0.15</size></box>
+          </geometry>
+          <material>
+            <ambient>0.1 0.3 0.9 1</ambient>
+          </material>
+        </visual>
+      </link>
+      <plugin name="planar_move" filename="libgazebo_ros_planar_move.so">
+        <ros>
+          <namespace>/drone</namespace>
+        </ros>
+        <command_topic>cmd_vel</command_topic>
+        <odometry_topic>odom</odometry_topic>
+        <odometry_frame>odom</odometry_frame>
+        <robot_base_frame>link</robot_base_frame>
+      </plugin>
+    </model>
+
+    <!-- A walking pedestrian actor with a simple back-and-forth path -->
+    <actor name="pedestrian_1">
+      <pose>3 0 1.0 0 0 0</pose>
+      <skin>
+        <filename>walk.dae</filename>
+        <scale>1.0</scale>
+      </skin>
+      <animation name="walking">
+        <filename>walk.dae</filename>
+        <scale>1.0</scale>
+        <interpolate_x>true</interpolate_x>
+      </animation>
+      <script>
+        <loop>true</loop>
+        <auto_start>true</auto_start>
+        <trajectory id="0" type="walking">
+          <waypoint>
+            <time>0</time>
+            <pose>3 -3 1.0 0 0 1.57</pose>
+          </waypoint>
+          <waypoint>
+            <time>5</time>
+            <pose>3 3 1.0 0 0 1.57</pose>
+          </waypoint>
+          <waypoint>
+            <time>10</time>
+            <pose>3 -3 1.0 0 0 -1.57</pose>
+          </waypoint>
+        </trajectory>
+      </script>
+    </actor>
+  </world>
+</sdf>

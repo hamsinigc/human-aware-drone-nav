@@ -1,0 +1,133 @@
+"""
+Step 1 test script — confirms we can read BOTH the drone's position
+(via /drone/odom) and the pedestrian's position (via the
+/gazebo/get_entity_state service) from a single Python script.
+
+This does NOT control anything yet — it only reads positions and prints
+them, so we can verify the connection works before building the full
+RL environment on top of it.
+
+Run this with Gazebo already running (your crowd_world.world), in a
+SEPARATE terminal from the one running `gazebo`.
+
+IMPORTANT: run this with plain `python3`, with ROS2 sourced (which
+your .bashrc already does automatically) — do NOT run this inside the
+traj_predictor or drone_rl pip virtual environments; rclpy is a
+system package, not a pip package.
+"""
+
+import rclpy
+from rclpy.node import Node
+from nav_msgs.msg import Odometry
+from gazebo_msgs.srv import GetEntityState
+
+
+class BridgeTestNode(Node):
+    def __init__(self):
+        super().__init__("bridge_test_node")
+
+        self.drone_pos = None
+        self.create_subscription(Odometry, "/drone/odom", self._odom_cb, 10)
+
+        self.state_client = self.create_client(
+            GetEntityState, "/gazebo/get_entity_state"
+        )
+        while not self.state_client.wait_for_service(timeout_sec=2.0):
+            self.get_logger().info("Waiting for /gazebo/get_entity_state service...")
+
+        self.timer = self.create_timer(1.0, self._tick)
+
+    def _odom_cb(self, msg: Odometry):
+        p = msg.pose.pose.position
+        self.drone_pos = (p.x, p.y, p.z)
+
+    def _get_entity_position(self, name: str):
+        req = GetEntityState.Request()
+        req.name = name
+        future = self.state_client.call_async(req)
+        rclpy.spin_until_future_complete(self, future, timeout_sec=2.0)
+        if future.result() is not None and future.result().success:
+            p = future.result().state.pose.position
+            return (p.x, p.y, p.z)
+        return None
+
+    def _tick(self):
+        ped_pos = self._get_entity_position("pedestrian_1")
+        print(
+            f"Drone position: {self.drone_pos}  |  "
+            f"Pedestrian position: {ped_pos}"
+        )
+
+
+def main():
+    rclpy.init()
+    node = BridgeTestNode()
+    try:
+        rclpy.spin(node)
+    except KeyboardInterrupt:
+        pass
+    finally:
+        node.destroy_node()
+        rclpy.shutdown()
+
+
+if __name__ == "__main__":
+    main()"""
+Step 1 test script — confirms we can read BOTH the drone's position
+(via /drone/odom) and the pedestrian's position (via the
+/gazebo/get_entity_state service) from a single Python script.
+
+This does NOT control anything yet — it only reads positions and prints
+them, so we can verify the connection works before building the full
+RL environment on top of it.
+
+Run this with Gazebo already running (your crowd_world.world), in a
+SEPARATE terminal from the one running `gazebo`.
+
+IMPORTANT: run this with plain `python3`, with ROS2 sourced (which
+your .bashrc already does automatically) — do NOT run this inside the
+traj_predictor or drone_rl pip virtual environments; rclpy is a
+system package, not a pip package.
+"""
+
+import rclpy
+from rclpy.node import Node
+from nav_msgs.msg import Odometry
+from gazebo_msgs.srv import GetEntityState
+
+
+class BridgeTestNode(Node):
+    def __init__(self):
+        super().__init__("bridge_test_node")
+
+        self.drone_pos = None
+        self.create_subscription(Odometry, "/drone/odom", self._odom_cb, 10)
+
+        self.state_client = self.create_client(
+            GetEntityState, "/gazebo/get_entity_state"
+        )
+        while not self.state_client.wait_for_service(timeout_sec=2.0):
+            self.get_logger().info("Waiting for /gazebo/get_entity_state service...")
+
+        self.timer = self.create_timer(1.0, self._tick)
+
+    def _odom_cb(self, msg: Odometry):
+        p = msg.pose.pose.position
+        self.drone_pos = (p.x, p.y, p.z)
+
+    def _get_entity_position(self, name: str):
+        req = GetEntityState.Request()
+        req.name = name
+        future = self.state_client.call_async(req)
+        rclpy.spin_until_future_complete(self, future, timeout_sec=2.0)
+        if future.result() is not None and future.result().success:
+            p = future.result().state.pose.position
+            return (p.x, p.y, p.z)
+        return None
+
+    def _tick(self):
+        ped_pos = self._get_entity_position("pedestrian_1")
+        print(
+            f"Drone position: {self.drone_pos}  |  "
+            f"Pedestrian position: {ped_pos}"
+       
