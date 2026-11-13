@@ -1,0 +1,308 @@
+<?xml version="1.0" ?>
+<sdf version="1.6">
+  <world name="crowd_world">
+    <plugin name="gazebo_ros_state" filename="libgazebo_ros_state.so">
+      <ros>
+        <namespace>/gazebo</namespace>
+      </ros>
+    </plugin>
+
+    <include>
+      <uri>model://ground_plane</uri>
+    </include>
+    <include>
+      <uri>model://sun</uri>
+    </include>
+
+    <!-- Drone Model with Sensors and Planar Move Plugin -->
+    <model name="drone">
+      <pose>0 0 4.5 0 0 0</pose>
+      <link name="link">
+        <gravity>0</gravity>
+        <inertial>
+          <mass>1.0</mass>
+        </inertial>
+        <collision name="collision">
+          <geometry>
+            <box><size>0.5 0.5 0.15</size></box>
+          </geometry>
+        </collision>
+        <visual name="body">
+          <geometry><box><size>0.35 0.35 0.12</size></box></geometry>
+          <material><ambient>0.15 0.15 0.15 1</ambient><diffuse>0.15 0.15 0.15 1</diffuse></material>
+        </visual>
+
+        <visual name="arm_fr"><pose>0.28 0.28 0 0 0 0.785</pose>
+          <geometry><cylinder><radius>0.02</radius><length>0.5</length></cylinder></geometry>
+          <material><ambient>0.2 0.2 0.2 1</ambient></material></visual>
+        <visual name="arm_fl"><pose>0.28 -0.28 0 0 0 -0.785</pose>
+          <geometry><cylinder><radius>0.02</radius><length>0.5</length></cylinder></geometry>
+          <material><ambient>0.2 0.2 0.2 1</ambient></material></visual>
+        <visual name="arm_br"><pose>-0.28 0.28 0 0 0 -0.785</pose>
+          <geometry><cylinder><radius>0.02</radius><length>0.5</length></cylinder></geometry>
+          <material><ambient>0.2 0.2 0.2 1</ambient></material></visual>
+        <visual name="arm_bl"><pose>-0.28 -0.28 0 0 0 0.785</pose>
+          <geometry><cylinder><radius>0.02</radius><length>0.5</length></cylinder></geometry>
+          <material><ambient>0.2 0.2 0.2 1</ambient></material></visual>
+
+        <visual name="rotor_fr"><pose>0.45 0.45 0.03 0 0 0</pose>
+          <geometry><cylinder><radius>0.12</radius><length>0.02</length></cylinder></geometry>
+          <material><ambient>0.9 0.1 0.1 1</ambient></material></visual>
+        <visual name="rotor_fl"><pose>0.45 -0.45 0.03 0 0 0</pose>
+          <geometry><cylinder><radius>0.12</radius><length>0.02</length></cylinder></geometry>
+          <material><ambient>0.1 0.3 0.9 1</ambient></material></visual>
+        <visual name="rotor_br"><pose>-0.45 0.45 0.03 0 0 0</pose>
+          <geometry><cylinder><radius>0.12</radius><length>0.02</length></cylinder></geometry>
+          <material><ambient>0.1 0.3 0.9 1</ambient></material></visual>
+        <visual name="rotor_bl"><pose>-0.45 -0.45 0.03 0 0 0</pose>
+          <geometry><cylinder><radius>0.12</radius><length>0.02</length></cylinder></geometry>
+          <material><ambient>0.9 0.1 0.1 1</ambient></material></visual>
+
+        <!-- Drone Camera (FPV / Back View Tracking) -->
+        <sensor name="drone_camera" type="camera">
+          <pose>0.1 0 0.1 0 0 0</pose>
+          <camera>
+            <horizontal_fov>1.2</horizontal_fov>
+            <image>
+              <width>1280</width>
+              <height>960</height>
+            </image>
+            <clip>
+              <near>0.1</near>
+              <far>100</far>
+            </clip>
+          </camera>
+          <always_on>1</always_on>
+          <update_rate>30</update_rate>
+          <plugin name="camera_controller" filename="libgazebo_ros_camera.so">
+            <ros>
+              <namespace>drone_cam</namespace>
+            </ros>
+          </plugin>
+        </sensor>
+
+        <sensor name="camera_front" type="camera">
+          <pose>0.18 0 0 0 0 0</pose>
+          <camera><horizontal_fov>1.4</horizontal_fov><image><width>320</width><height>240</height></image><clip><near>0.1</near><far>100</far></clip></camera>
+          <always_on>true</always_on><update_rate>10</update_rate><visualize>false</visualize>
+          <plugin name="cam_front_plugin" filename="libgazebo_ros_camera.so">
+            <ros><namespace>/drone/camera_front</namespace></ros>
+            <camera_name>front</camera_name><frame_name>camera_front_link</frame_name>
+          </plugin>
+        </sensor>
+
+        <sensor name="camera_back" type="camera">
+          <pose>-0.18 0 0 0 0 3.14159</pose>
+          <camera><horizontal_fov>1.4</horizontal_fov><image><width>320</width><height>240</height></image><clip><near>0.1</near><far>100</far></clip></camera>
+          <always_on>true</always_on><update_rate>10</update_rate><visualize>false</visualize>
+          <plugin name="cam_back_plugin" filename="libgazebo_ros_camera.so">
+            <ros><namespace>/drone/camera_back</namespace></ros>
+            <camera_name>back</camera_name><frame_name>camera_back_link</frame_name>
+          </plugin>
+        </sensor>
+
+        <sensor name="camera_left" type="camera">
+          <pose>0 0.18 0 0 0 1.5708</pose>
+          <camera><horizontal_fov>1.4</horizontal_fov><image><width>320</width><height>240</height></image><clip><near>0.1</near><far>100</far></clip></camera>
+          <always_on>true</always_on><update_rate>10</update_rate><visualize>false</visualize>
+          <plugin name="cam_left_plugin" filename="libgazebo_ros_camera.so">
+            <ros><namespace>/drone/camera_left</namespace></ros>
+            <camera_name>left</camera_name><frame_name>camera_left_link</frame_name>
+          </plugin>
+        </sensor>
+
+        <sensor name="camera_right" type="camera">
+          <pose>0 -0.18 0 0 0 -1.5708</pose>
+          <camera><horizontal_fov>1.4</horizontal_fov><image><width>320</width><height>240</height></image><clip><near>0.1</near><far>100</far></clip></camera>
+          <always_on>true</always_on><update_rate>10</update_rate><visualize>false</visualize>
+          <plugin name="cam_right_plugin" filename="libgazebo_ros_camera.so">
+            <ros><namespace>/drone/camera_right</namespace></ros>
+            <camera_name>right</camera_name><frame_name>camera_right_link</frame_name>
+          </plugin>
+        </sensor>
+      </link>
+
+      <plugin name="planar_move" filename="libgazebo_ros_planar_move.so">
+        <ros><namespace>/drone</namespace></ros>
+        <command_topic>cmd_vel</command_topic>
+        <odometry_topic>odom</odometry_topic>
+        <odometry_frame>odom</odometry_frame>
+        <robot_base_frame>link</robot_base_frame>
+      </plugin>
+    </model>
+
+    <!-- Fairground Objects & Scenery -->
+    <model name="stall_1"><static>true</static><pose>5 5 0.75 0 0 0</pose><link name="link">
+      <visual name="base"><geometry><box><size>1.2 1.2 1.5</size></box></geometry><material><ambient>0.8 0.2 0.2 1</ambient></material></visual>
+      <visual name="roof"><pose>0 0 0.85 0 0 0</pose><geometry><box><size>1.5 1.5 0.15</size></box></geometry><material><ambient>0.9 0.1 0.1 1</ambient></material></visual>
+      <collision name="collision"><geometry><box><size>1.2 1.2 1.5</size></box></geometry></collision>
+    </link></model>
+
+    <model name="stall_2"><static>true</static><pose>-5 5 0.75 0 0 0.4</pose><link name="link">
+      <visual name="base"><geometry><box><size>1.2 1.2 1.5</size></box></geometry><material><ambient>0.2 0.6 0.9 1</ambient></material></visual>
+      <visual name="roof"><pose>0 0 0.85 0 0 0</pose><geometry><box><size>1.5 1.5 0.15</size></box></geometry><material><ambient>0.1 0.5 0.8 1</ambient></material></visual>
+      <collision name="collision"><geometry><box><size>1.2 1.2 1.5</size></box></geometry></collision>
+    </link></model>
+
+    <model name="stall_3"><static>true</static><pose>5 -5 0.75 0 0 -0.6</pose><link name="link">
+      <visual name="base"><geometry><box><size>1.2 1.2 1.5</size></box></geometry><material><ambient>0.9 0.8 0.1 1</ambient></material></visual>
+      <visual name="roof"><pose>0 0 0.85 0 0 0</pose><geometry><box><size>1.5 1.5 0.15</size></box></geometry><material><ambient>0.8 0.7 0.1 1</ambient></material></visual>
+      <collision name="collision"><geometry><box><size>1.2 1.2 1.5</size></box></geometry></collision>
+    </link></model>
+
+    <model name="tent_1"><static>true</static><pose>-5 -5 1.0 0 0 0</pose><link name="link">
+      <visual name="tent"><geometry><box><size>2.5 2.5 2.0</size></box></geometry><material><ambient>0.3 0.7 0.3 1</ambient></material></visual>
+      <collision name="collision"><geometry><box><size>2.5 2.5 2.0</size></box></geometry></collision>
+    </link></model>
+
+    <model name="tree_1"><static>true</static><pose>7 0 0 0 0 0</pose><link name="link">
+      <visual name="trunk"><pose>0 0 0.75 0 0 0</pose><geometry><cylinder><radius>0.15</radius><length>1.5</length></cylinder></geometry><material><ambient>0.4 0.2 0.1 1</ambient></material></visual>
+      <visual name="canopy"><pose>0 0 1.8 0 0 0</pose><geometry><sphere><radius>0.9</radius></sphere></geometry><material><ambient>0.1 0.6 0.1 1</ambient></material></visual>
+      <collision name="collision"><pose>0 0 0.75 0 0 0</pose><geometry><cylinder><radius>0.15</radius><length>1.5</length></cylinder></geometry></collision>
+    </link></model>
+
+    <model name="tree_2"><static>true</static><pose>-7 0 0 0 0 0</pose><link name="link">
+      <visual name="trunk"><pose>0 0 0.75 0 0 0</pose><geometry><cylinder><radius>0.15</radius><length>1.5</length></cylinder></geometry><material><ambient>0.4 0.2 0.1 1</ambient></material></visual>
+      <visual name="canopy"><pose>0 0 1.8 0 0 0</pose><geometry><sphere><radius>0.9</radius></sphere></geometry><material><ambient>0.1 0.6 0.1 1</ambient></material></visual>
+      <collision name="collision"><pose>0 0 0.75 0 0 0</pose><geometry><cylinder><radius>0.15</radius><length>1.5</length></cylinder></geometry></collision>
+    </link></model>
+
+    <model name="tree_3"><static>true</static><pose>0 7 0 0 0 0</pose><link name="link">
+      <visual name="trunk"><pose>0 0 0.75 0 0 0</pose><geometry><cylinder><radius>0.15</radius><length>1.5</length></cylinder></geometry><material><ambient>0.4 0.2 0.1 1</ambient></material></visual>
+      <visual name="canopy"><pose>0 0 1.8 0 0 0</pose><geometry><sphere><radius>0.9</radius></sphere></geometry><material><ambient>0.1 0.6 0.1 1</ambient></material></visual>
+      <collision name="collision"><pose>0 0 0.75 0 0 0</pose><geometry><cylinder><radius>0.15</radius><length>1.5</length></cylinder></geometry></collision>
+    </link></model>
+
+    <model name="tree_4"><static>true</static><pose>0 -7 0 0 0 0</pose><link name="link">
+      <visual name="trunk"><pose>0 0 0.75 0 0 0</pose><geometry><cylinder><radius>0.15</radius><length>1.5</length></cylinder></geometry><material><ambient>0.4 0.2 0.1 1</ambient></material></visual>
+      <visual name="canopy"><pose>0 0 1.8 0 0 0</pose><geometry><sphere><radius>0.9</radius></sphere></geometry><material><ambient>0.1 0.6 0.1 1</ambient></material></visual>
+      <collision name="collision"><pose>0 0 0.75 0 0 0</pose><geometry><cylinder><radius>0.15</radius><length>1.5</length></cylinder></geometry></collision>
+    </link></model>
+
+    <model name="bench_1"><static>true</static><pose>1.5 -1.5 0.25 0 0 0.3</pose><link name="link">
+      <visual name="seat"><geometry><box><size>1.2 0.4 0.1</size></box></geometry><material><ambient>0.5 0.3 0.15 1</ambient></material></visual>
+      <collision name="collision"><geometry><box><size>1.2 0.4 0.1</size></box></geometry></collision>
+    </link></model>
+
+    <model name="bench_2"><static>true</static><pose>-1.5 1.5 0.25 0 0 -0.3</pose><link name="link">
+      <visual name="seat"><geometry><box><size>1.2 0.4 0.1</size></box></geometry><material><ambient>0.5 0.3 0.15 1</ambient></material></visual>
+      <collision name="collision"><geometry><box><size>1.2 0.4 0.1</size></box></geometry></collision>
+    </link></model>
+
+    <model name="lamp_1"><static>true</static><pose>4 -4 0 0 0 0</pose><link name="link">
+      <visual name="pole"><pose>0 0 1.5 0 0 0</pose><geometry><cylinder><radius>0.05</radius><length>3.0</length></cylinder></geometry><material><ambient>0.2 0.2 0.2 1</ambient></material></visual>
+      <visual name="light"><pose>0 0 3.05 0 0 0</pose><geometry><sphere><radius>0.15</radius></sphere></geometry><material><ambient>1 1 0.8 1</ambient></material></visual>
+      <collision name="collision"><pose>0 0 1.5 0 0 0</pose><geometry><cylinder><radius>0.05</radius><length>3.0</length></cylinder></geometry></collision>
+    </link></model>
+
+    <model name="lamp_2"><static>true</static><pose>-4 4 0 0 0 0</pose><link name="link">
+      <visual name="pole"><pose>0 0 1.5 0 0 0</pose><geometry><cylinder><radius>0.05</radius><length>3.0</length></cylinder></geometry><material><ambient>0.2 0.2 0.2 1</ambient></material></visual>
+      <visual name="light"><pose>0 0 3.05 0 0 0</pose><geometry><sphere><radius>0.15</radius></sphere></geometry><material><ambient>1 1 0.8 1</ambient></material></visual>
+      <collision name="collision"><pose>0 0 1.5 0 0 0</pose><geometry><cylinder><radius>0.05</radius><length>3.0</length></cylinder></geometry></collision>
+    </link></model>
+
+    <!-- Pedestrians / Actors -->
+    <actor name="pedestrian_1">
+      <pose>0.05 -1.05 1.0 0 0 0</pose>
+      <skin><filename>walk.dae</filename><scale>1.0</scale></skin>
+      <animation name="walking"><filename>walk.dae</filename><scale>1.0</scale><interpolate_x>true</interpolate_x></animation>
+      <script><loop>true</loop><auto_start>true</auto_start>
+        <trajectory id="0" type="walking">
+          <waypoint><time>0.0</time><pose>0.05 -1.05 1.0 0 0 3.19</pose></waypoint>
+          <waypoint><time>4.7</time><pose>-0.88 -0.57 1.0 0 0 2.14</pose></waypoint>
+          <waypoint><time>9.4</time><pose>-0.93 0.48 1.0 0 0 1.10</pose></waypoint>
+          <waypoint><time>14.1</time><pose>-0.05 1.05 1.0 0 0 0.05</pose></waypoint>
+          <waypoint><time>18.8</time><pose>0.88 0.57 1.0 0 0 -1.00</pose></waypoint>
+          <waypoint><time>23.4</time><pose>0.93 -0.48 1.0 0 0 -2.04</pose></waypoint>
+          <waypoint><time>28.1</time><pose>0.05 -1.05 1.0 0 0 -3.09</pose></waypoint>
+        </trajectory>
+      </script>
+    </actor>
+
+    <actor name="pedestrian_2">
+      <pose>1.47 -0.32 1.0 0 0 0</pose>
+      <skin><filename>walk.dae</filename><scale>1.0</scale></skin>
+      <animation name="walking"><filename>walk.dae</filename><scale>1.0</scale><interpolate_x>true</interpolate_x></animation>
+      <script><loop>true</loop><auto_start>true</auto_start>
+        <trajectory id="0" type="walking">
+          <waypoint><time>0.0</time><pose>1.47 -0.32 1.0 0 0 4.50</pose></waypoint>
+          <waypoint><time>3.1</time><pose>0.45 -1.43 1.0 0 0 3.45</pose></waypoint>
+          <waypoint><time>6.2</time><pose>-1.02 -1.11 1.0 0 0 2.40</pose></waypoint>
+          <waypoint><time>9.2</time><pose>-1.47 0.32 1.0 0 0 1.35</pose></waypoint>
+          <waypoint><time>12.3</time><pose>-0.45 1.43 1.0 0 0 0.31</pose></waypoint>
+          <waypoint><time>15.4</time><pose>1.02 1.11 1.0 0 0 -0.74</pose></waypoint>
+          <waypoint><time>18.5</time><pose>1.47 -0.32 1.0 0 0 -1.79</pose></waypoint>
+        </trajectory>
+      </script>
+    </actor>
+
+    <actor name="pedestrian_3">
+      <pose>0.41 -1.92 1.0 0 0 0</pose>
+      <skin><filename>walk.dae</filename><scale>1.0</scale></skin>
+      <animation name="walking"><filename>walk.dae</filename><scale>1.0</scale><interpolate_x>true</interpolate_x></animation>
+      <script><loop>true</loop><auto_start>true</auto_start>
+        <trajectory id="0" type="walking">
+          <waypoint><time>0.0</time><pose>0.41 -1.92 1.0 0 0 3.35</pose></waypoint>
+          <waypoint><time>3.8</time><pose>-1.45 -1.32 1.0 0 0 2.31</pose></waypoint>
+          <waypoint><time>7.6</time><pose>-1.87 0.60 1.0 0 0 1.26</pose></waypoint>
+          <waypoint><time>11.4</time><pose>-0.41 1.92 1.0 0 0 0.21</pose></waypoint>
+          <waypoint><time>15.2</time><pose>1.45 1.32 1.0 0 0 -0.83</pose></waypoint>
+          <waypoint><time>19.0</time><pose>1.87 -0.60 1.0 0 0 -1.88</pose></waypoint>
+          <waypoint><time>22.9</time><pose>0.41 -1.92 1.0 0 0 -2.93</pose></waypoint>
+        </trajectory>
+      </script>
+    </actor>
+
+    <actor name="pedestrian_4">
+      <pose>-1.52 1.88 1.0 0 0 0</pose>
+      <skin><filename>walk.dae</filename><scale>1.0</scale></skin>
+      <animation name="walking"><filename>walk.dae</filename><scale>1.0</scale><interpolate_x>true</interpolate_x></animation>
+      <script><loop>true</loop><auto_start>true</auto_start>
+        <trajectory id="0" type="walking">
+          <waypoint><time>0.0</time><pose>-1.52 1.88 1.0 0 0 3.82</pose></waypoint>
+          <waypoint><time>4.9</time><pose>-2.39 -0.37 1.0 0 0 4.87</pose></waypoint>
+          <waypoint><time>9.9</time><pose>-0.87 -2.25 1.0 0 0 5.91</pose></waypoint>
+          <waypoint><time>14.8</time><pose>1.52 -1.88 1.0 0 0 6.96</pose></waypoint>
+          <waypoint><time>19.7</time><pose>2.39 0.37 1.0 0 0 8.01</pose></waypoint>
+          <waypoint><time>24.7</time><pose>0.87 2.25 1.0 0 0 9.06</pose></waypoint>
+          <waypoint><time>29.6</time><pose>-1.52 1.88 1.0 0 0 10.10</pose></waypoint>
+        </trajectory>
+      </script>
+    </actor>
+
+    <actor name="pedestrian_5">
+      <pose>-0.57 2.81 1.0 0 0 0</pose>
+      <skin><filename>walk.dae</filename><scale>1.0</scale></skin>
+      <animation name="walking"><filename>walk.dae</filename><scale>1.0</scale><interpolate_x>true</interpolate_x></animation>
+      <script><loop>true</loop><auto_start>true</auto_start>
+        <trajectory id="0" type="walking">
+          <waypoint><time>0.0</time><pose>-0.57 2.81 1.0 0 0 3.34</pose></waypoint>
+          <waypoint><time>4.0</time><pose>-2.72 0.91 1.0 0 0 4.39</pose></waypoint>
+          <waypoint><time>8.0</time><pose>-2.15 -1.90 1.0 0 0 5.44</pose></waypoint>
+          <waypoint><time>12.0</time><pose>0.57 -2.81 1.0 0 0 6.48</pose></waypoint>
+          <waypoint><time>16.0</time><pose>2.72 -0.91 1.0 0 0 7.53</pose></waypoint>
+          <waypoint><time>20.0</time><pose>2.15 1.90 1.0 0 0 8.58</pose></waypoint>
+          <waypoint><time>24.1</time><pose>-0.57 2.81 1.0 0 0 9.62</pose></waypoint>
+        </trajectory>
+      </script>
+    </actor>
+
+    <actor name="pedestrian_6">
+      <pose>-0.01 3.32 1.0 0 0 0</pose>
+      <skin><filename>walk.dae</filename><scale>1.0</scale></skin>
+      <animation name="walking"><filename>walk.dae</filename><scale>1.0</scale><interpolate_x>true</interpolate_x></animation>
+      <script><loop>true</loop><auto_start>true</auto_start>
+        <trajectory id="0" type="walking">
+          <waypoint><time>0.0</time><pose>-0.01 3.32 1.0 0 0 3.14</pose></waypoint>
+          <waypoint><time>4.2</time><pose>-2.88 1.65 1.0 0 0 4.19</pose></waypoint>
+          <waypoint><time>8.5</time><pose>-2.87 -1.67 1.0 0 0 5.24</pose></waypoint>
+          <waypoint><time>12.7</time><pose>0.01 -3.32 1.0 0 0 6.29</pose></waypoint>
+          <waypoint><time>16.9</time><pose>2.88 -1.65 1.0 0 0 7.33</pose></waypoint>
+          <waypoint><time>21.2</time><pose>2.87 1.67 1.0 0 0 8.38</pose></waypoint>
+          <waypoint><time>25.4</time><pose>-0.01 3.32 1.0 0 0 9.43</pose></waypoint>
+        </trajectory>
+      </script>
+    </actor>
+
+  </world>
+</sdf>
