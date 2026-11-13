@@ -33,7 +33,7 @@ class HumanAwareDroneWanderer(Node):
         self.status = "STABLE"
         
         self.obstacles = []
-        self.get_logger().info("Human-Aware Drone Wanderer with Top-Right HUD Initialized.")
+        self.get_logger().info("Human-Aware Drone Wanderer Initialized.")
 
     def odom_callback(self, msg):
         self.current_x = msg.pose.pose.position.x
@@ -44,7 +44,6 @@ class HumanAwareDroneWanderer(Node):
         self.velocity_y = msg.twist.twist.linear.y
         self.linear_speed = math.sqrt(self.velocity_x**2 + self.velocity_y**2)
         
-        # Calculate dynamic path tracking accuracy relative to target center/height
         target_dist_from_center = math.sqrt(self.current_x**2 + self.current_y**2)
         self.accuracy = max(85.0, min(99.9, 100.0 - (target_dist_from_center * 1.5) - (abs(4.5 - self.current_height) * 3.0)))
         
@@ -67,7 +66,6 @@ class HumanAwareDroneWanderer(Node):
 
         h, w, _ = frame.shape
         
-        # Top-Right HUD Dashboard Coordinates
         box_w, box_h = 280, 140
         x1 = w - box_w - 20
         y1 = 20
